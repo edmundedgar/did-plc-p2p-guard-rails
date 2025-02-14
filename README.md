@@ -22,7 +22,7 @@ Users sign their own DID update operations, but the validity or invalidity of an
 
 ### Serving queries
 
-Clients need to get their data about signed queries from somewhere. The DID:PLC server keeps a record of all updates, and serves the client either the record of updates (the audit log) or the current state.
+Clients need to get their data about signed queries from somewhere. The DID:PLC server keeps a record of all updates, and serves the client either the current state of a DID or the record of updates to it (the audit log).
 
 ## Problems with the current DID:PLC model
 
@@ -30,11 +30,15 @@ The single source of authority about DID:PLC updates is the central DID:PLC serv
 
 ### Censorship
 
-The server can maliciously refuse to process updates. It can also refuse to tell users and mirrors which updates it has accepted, in which case it will not be possible to run an honest mirror, so users cannot get information from any other source even if there is one they trust that was online when the updates were made.
+The server can maliciously refuse to accept updates. 
+
+It can also refuse to tell users and mirrors which updates it has accepted, in which case it will not be possible to run an honest mirror, so users cannot get information from any other source even if there is one they trust that was online when the updates were made.
+
+This differs from the situation elsewhere in atproto, where although users may rely on a semi-trusted server such as a relay or appview to provide them with data, they can always get the data from somewhere else if the server misbehaves and verify its accuracy.
 
 ### Malicious reorgs
 
-The server can lie about the relative times at which it received messages. In combination with possession of disused keys, this could be used to compromise user accounts.
+The server can lie about the relative times at which it received messages.
 
        time t           time t+1           time t+2            time t+3
 
@@ -54,7 +58,7 @@ The server may simply start performing badly, in which case it would be better i
 
 ### Serving queries
 
-We assume clients will mostly continue to use a semi-trusted server for serving queries, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any user trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
+We assume users will mostly continue to use a semi-trusted server for serving queries, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any user trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
 
 ### Signing messages
 
@@ -100,9 +104,19 @@ Note that since both the creation and signing of the merkle root and its publica
 
 1. Their update is in a merkle root signed by the timestamper and published on the blockchain
 2. They have the necessary intermediate tree node data to connect their update to that signed merkle root
-3. They know that none of the earlier signed checkpoints published on the blockchain contain conflicting data. (If there is a signed merkle root for a tree whose content is unknown, there is a possibility that the timestamper have have already found a compromised user rotation key and created a message with it, then included it in a signed merkle root without revealing the content of the tree that it represents).
 
-If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs, as they are now. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update.
+In the scenario below, someone sends Update1 to the blockchain for a P2P timestamp at time t+3. Clients will reject Update1b sent by the malicious timestamper at time t+4 because they will see that it is in conflict with the version timestamped at time t+3. Had the malicious timestamper created Update1b after time t+2 and sent it to the blockchain before time t+3, their malicious update would have prevailed.
+
+       time t           time t+1           time t+2            time t+3                time t+4
+
+    Genesis[Key 1] --------------------> Update1[Key 2] -------------------------------------------------->
+                   |                    (timestamped t2)
+                   |                                     (blockchain timestamp)
+                   |
+                   -------------------------------------------------------------> Update1b[Attacker key]-->
+                                                                                 (falsely timestamped t1)
+
+If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs, as they are now. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
 
 Note that since anyone can send a signed merkle root to the blockchain, there is no need for a user who wants immediate reorg protection to wait for someone else to do it; Once the timestamper has included their update in a signed merkle root, the user can do the blockchain timestamping themselves.
 
@@ -118,11 +132,11 @@ Consortium blockchains consisting of trusted parties operating without crypto-ec
 
 ### Why sign messages individually instead of using the signature of the merkle roots?
 
-Since the design calls for timestampers to put their messages in a signed tree, we could skip the individual signatures and instead rely on the signed merkle root. We propose individual signatures here only because it seems like a less disruptive change to the current functioning of the system (just add a "sig" field to the audit log instead of an entire proof) and secondly because the need to maintain the merkle tree in realtime may have performance and scaling implications. If these considerations are not considered a problem, The system described would otherwise work in the same way. 
+Since the design calls for timestampers to put their messages in a signed tree, we could skip the individual signatures and instead rely on proofs against the signed merkle root. We propose individual signatures here only because it seems like a less disruptive change to the current functioning of the system (just add a "sig" field to the audit log instead of an entire proof) and secondly because the need to maintain the merkle tree in real time for all the accounts the timestamper has updated may have performance implications and complicate some strategies for scaling. These considerations aside, the design would work equally well without the individual signatures.
 
 ### Why not require the timestamper to publish signed merkle trees?
 
-If trees are not published synchronously with message signing (see previous question), adding a validity rule about the publication of an additional piece of data that you don't have yet adds complexity.
+Assuming trees are not published synchronously with message signing (see previous question), adding a validity rule about the publication of an additional piece of data that you don't have yet adds complexity.
 
 ### Why sign `createdAt` and `CID` but not `nullified`?
 
@@ -134,7 +148,7 @@ We could require that updates be P2P timestamped. However this stops the system 
 
 ### Why use the blockchain for timestamper rotation keys?
 
-It would also be possible to use the DID:PLC system itself to manage what key is used by what timestamper. However this adds a degree of recursiveness to the system which makes it more confusing to analyse. Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying.
+It would also be possible to use the DID:PLC system itself to manage what key is used by what timestamper, instead of managing them purely on the blockchain. However this adds a degree of recursiveness to the system which makes it more confusing to analyse. Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying.
 
 
 
