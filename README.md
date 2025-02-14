@@ -62,19 +62,19 @@ We assume users will mostly continue to use a semi-trusted server for serving qu
 
 ### Signing messages
 
-When a timestamper timestamps a message, it also signs the CID of the update and the createdAt field. Each entry in the audit log will then contain not only the user's signature on the update, but also the timestamper's signature on the record accepting the update.
+When a timestamper timestamps a message, it also signs the `CID` of the update and the `createdAt` field. Each entry in the audit log will then contain not only the user's signature on the update, but also the timestamper's signature on the record accepting the update.
 
 Clients must consider updates invalid unless they have been either signed by the timestamper, or timestamped on the blockchain (see below).
 
 ### Managing timestamper keys
 
-The public key of the timestamper is managed on the blockchain. The details will depend on the blockchain implementation but a simple way to do this would be to make a simple smart contract storing the public key and the timestamp from which it becomes valid. This can then be managed using generic smart contract wallet tools such as a Gnosis Safe.
+The timestamper must maintain a [did:ethr](https://github.com/decentralized-identity/ethr-did-resolver/blob/master/doc/did-method-spec.md) record. The public key it signs with must be a valid `verificationMethod` at the time specified in the `createdAt` field, of type `EcdsaSecp256k1VerificationKey2019`.
 
 ### Changing timestampers
 
-We add an additional field to the DID, `timestamperAddress`. This is a blockchain address where we can look up the public key with which the messages by a given timestamper should be signed at any given point in time. A user can update this field in their DID record in the same way they would update any other field in the DID record.
+We add an additional field to the DID, `timestamperDid`. A user can update this field in their DID record in the same way they would update any other field in the DID record.
 
-Entries with no `timestamperAddress` specified are assumed to be using the address representing the existing DID:PLC service.
+Entries with no `timestamperDid` specified are assumed to be using the DID representing the preexisting DID:PLC service.
 
 ### Forcing updates with P2P timestamping
 
@@ -82,7 +82,7 @@ If the timestamper is functioning correctly, as the DID:PLC directory has to dat
 
 Clients should read messages from the blockchain and include them as if they have been signed by the timestamper.
 
-### Outputting signed merkle trees
+### Creating signed merkle trees
 
 Timestampers should arrange snapshots of the updates they signed in a merkle tree and sign the root of the tree. At the timestamper's discretion this may be done immediately after every update, or only applied to periodic snapshots. They should share the content of this tree so that any user can verify the state of their DID record in any given tree.
 
@@ -128,7 +128,7 @@ We could put the whole system on a blockchain, but all available options have dr
 
 Public blockchains, if sufficiently decentralized to make their usage meaningful, tend to have slow time to update, and can be unpredictably expensive due to scaling limitations. This proposal aims to maintain the current user experience of a user whose timestamper is well-behaved, which is difficult to guarantee with the mature public blockchains currently available.
 
-Consortium blockchains consisting of trusted parties operating without crypto-economic incentives may be able to scale sufficiently and provide updates only somewhat slower than the current centralized directory. However such arrangements have rarely been successful in practice. One problem is that the consortium needs to consist of members with exactly the right amount of adversariality: If they are too well aligned with the people who ask them to participate they fail to provide an adequate check on the kind of behaviour they are supposed to prevent, and just run whatever update they are asked to by the person who would otherwise have been running the centralized server. This arrangement may even be worse than having a single trusted party, because responsibility is diluted and no single party can be blamed. If they are too adversarial, the consortium is liable to dissolve due to factional in-fighting.
+Consortium blockchains consisting of trusted parties operating without crypto-economic incentives may be able to scale sufficiently and provide updates only somewhat slower than the current centralized directory. However such arrangements have rarely been successful in practice. One problem is that the consortium needs to consist of members with exactly the right amount of adversariality: If they are too well aligned with the people who ask them to participate they fail to provide an adequate check on the kind of behaviour they are supposed to prevent, and just run whatever update they are asked to by the person who would otherwise have been running the centralized server. This arrangement may even be worse than having a single trusted party, because responsibility is diluted and no single party can be blamed. If they are too adversarial, the consortium may fragment.
 
 ### Why sign messages individually instead of using the signature of the merkle roots?
 
@@ -146,9 +146,8 @@ Whether a message should be nullified can be verified independently by the clien
 
 We could require that updates be P2P timestamped. However this stops the system processing updates if the blockchain is unavailable for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
 
-### Why use the blockchain for timestamper rotation keys?
+### Why use DID:ETHR for timestamper rotation keys?
 
-It would also be possible to use the DID:PLC system itself to manage what key is used by what timestamper, instead of managing them purely on the blockchain. However this adds a degree of recursiveness to the system which makes it more confusing to analyse. Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying.
+Atproto supports two address standards, DID:Web and DID:PLC. DID:Web is unsuitable because we need to maintain a history of updates which cannot be tampered with even by the timestamper themselves. Using DID:PLC would add a degree of recursiveness to the system which makes it more confusing to analyse.
 
-
-
+Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying. We propose DID:ETHR because it already exists as a well-specified standard. Using a simpler bespoke instead standard would also be viable.
