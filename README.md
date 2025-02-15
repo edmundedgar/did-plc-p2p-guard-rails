@@ -78,7 +78,7 @@ Entries with no `timestamperDid` specified are assumed to be using the DID repre
 
 ### Forcing updates with P2P timestamping
 
-If the timestamper is functioning correctly, as the DID:PLC directory has to date, a user can update their DID record with the timestamper as they do now. However, the user also has the option to send their update to the blockchain. In normal conditions this is slower and more expensive than sending it to their timestamper, so normally it would only be done if the timestamper is unavailable or refuses to accept their update.
+If the timestamper is functioning correctly, a user can update their DID record with the timestamper as they do now. However, the user also has the option to send their update to the blockchain. In normal conditions this is slower and more expensive than sending it to their timestamper, so normally it would only be done if the timestamper is unavailable or refuses to accept their update.
 
 Clients should read messages from the blockchain and include them as if they have been signed by the timestamper.
 
@@ -98,14 +98,14 @@ Given honest, correctly-functioning timestampers, anyone in receipt of all the s
 
 However, as we discussed earlier, a malicious or broken timestamper may sign messages that purport to have been received earlier than they really were. This can result in conflicting versions of the DID. Clients need to be able to choose between these conflicting versions.
 
-We propose that if a timestamper timestamps a version of the DID that conflicts with a version that has already been included in a signed merkle root timestamped on the blockchain, a client must honour the earlier blockchain-timestamped version. In the event of a conflict, a blockchain-timestamped update must always be considered to have been timestamped earlier than an update that has not been blockchain-timestamped.
+We tackle reorgs by adding the rule that that if a timestamper timestamps a version of the DID that conflicts with a version that has already been included in a signed merkle root timestamped on the blockchain, a client must honour the earlier blockchain-timestamped version.
 
 Note that since both the creation and signing of the merkle root and its publication on the blockchain are optional, and the sharing of the data that would allow the construction of proofs against the merkle root is not enforced, a user can only be confident that their update is secure against a fraudulent reorg by the timestamper if the following conditions apply:
 
 1. Their update is in a merkle root signed by the timestamper and published on the blockchain
 2. They have the necessary intermediate tree node data to connect their update to that signed merkle root
 
-In the scenario below, someone sends Update1 to the blockchain for a P2P timestamp at time t+3. Clients will reject Update1b sent by the malicious timestamper at time t+4 because they will see that it is in conflict with the version timestamped at time t+3. Had the malicious timestamper created Update1b after time t+2 and sent it to the blockchain before time t+3, their malicious update would have prevailed.
+In the scenario below, someone sends `Update1` to the blockchain for a P2P timestamp at time `t+3`. Clients will reject `Update1b` sent by the malicious timestamper at time `t+4` because they will see that it is in conflict with the version timestamped at time `t+3`. Had the malicious timestamper created `Update1b` after time `t+2` and sent it to the blockchain before time `t+3`, their malicious update would have prevailed.
 
        time t         time t+1        time t+2          time t+3          time t+4
 
@@ -116,9 +116,9 @@ In the scenario below, someone sends Update1 to the blockchain for a P2P timesta
                    -----------------------------------------------> Update1b[Attacker key]-->
                                                                    (falsely timestamped t1)
 
-If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs, as they are now. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
+If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
 
-Note that since anyone can send a signed merkle root to the blockchain, there is no need for a user who wants immediate reorg protection to wait for someone else to do it; Once the timestamper has included their update in a signed merkle root, the user can do the blockchain timestamping themselves.
+Note that since anyone can send a signed merkle root to the blockchain, there is no need for a user who wants immediate reorg protection to wait for someone else to do it: Once the timestamper has included their update in a signed merkle root, the user can do the blockchain timestamping themselves.
 
 ## Rationale and variations
 
@@ -144,10 +144,10 @@ Whether a message should be nullified can be verified independently by the clien
 
 ### Why not require the timestamper to publish blockchain updates?
 
-The design makes blockchain timestamps entirely voluntary. Timestampers do not need to write to the blockchain at all, except when they update their signing key. We could instead require that updates be P2P timestamped. However this would stop timestampers processing updates they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
+The design makes blockchain timestamps entirely voluntary. Timestampers do not need to write to the blockchain at all, except when they update their signing key. We could instead require that updates be P2P timestamped as a condition for validity. However this would prevent timestampers from processing updates if they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
 
 ### Why use DID:ETHR for timestamper rotation keys?
 
-Atproto supports two address standards, DID:Web and DID:PLC. DID:Web is unsuitable because we need to maintain a history of updates which cannot be tampered with even by the timestamper themselves. Using DID:PLC would add a degree of recursiveness to the system which makes it more confusing to analyse.
+Other parts of Atproto support two address standards, DID:Web and DID:PLC. DID:Web is unsuitable because we need to maintain a history of updates which cannot be tampered with even by the timestamper themselves. Using DID:PLC would add a degree of recursiveness to the system which makes it confusing to analyse.
 
-Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying. We propose DID:ETHR because it already exists as a well-specified standard. Using a simpler bespoke instead standard would also be viable.
+Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying. We propose DID:ETHR because it already exists as a well-specified standard (albeit not a widely-adopted one). Using a simpler bespoke standard instead would also be viable.
