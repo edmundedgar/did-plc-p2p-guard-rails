@@ -107,14 +107,14 @@ Note that since both the creation and signing of the merkle root and its publica
 
 In the scenario below, someone sends Update1 to the blockchain for a P2P timestamp at time t+3. Clients will reject Update1b sent by the malicious timestamper at time t+4 because they will see that it is in conflict with the version timestamped at time t+3. Had the malicious timestamper created Update1b after time t+2 and sent it to the blockchain before time t+3, their malicious update would have prevailed.
 
-       time t           time t+1           time t+2            time t+3                time t+4
+       time t         time t+1        time t+2          time t+3          time t+4
 
-    Genesis[Key 1] --------------------> Update1[Key 2] -------------------------------------------------->
-                   |                    (timestamped t2)
-                   |                                     (blockchain timestamp)
+    Genesis[Key 1] --------------> Update1[Key 2] ------------------------------------------>
+                   |              (timestamped t2)
+                   |                               (blockchain timestamp)
                    |
-                   -------------------------------------------------------------> Update1b[Attacker key]-->
-                                                                                 (falsely timestamped t1)
+                   -----------------------------------------------> Update1b[Attacker key]-->
+                                                                   (falsely timestamped t1)
 
 If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs, as they are now. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
 
@@ -144,7 +144,7 @@ Whether a message should be nullified can be verified independently by the clien
 
 ### Why not require the timestamper to publish blockchain updates?
 
-We could require that updates be P2P timestamped. However this stops timestampers processing updates they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
+The design makes blockchain timestamps entirely voluntary. Timestampers do not need to write to the blockchain at all, except when they update their signing key. We could instead require that updates be P2P timestamped. However this would stop timestampers processing updates they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
 
 ### Why use DID:ETHR for timestamper rotation keys?
 
