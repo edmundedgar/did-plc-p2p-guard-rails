@@ -68,7 +68,7 @@ Clients must consider updates invalid unless they have been either signed by the
 
 ### Managing timestamper keys
 
-The timestamper must maintain a [did:ethr](https://github.com/decentralized-identity/ethr-did-resolver/blob/master/doc/did-method-spec.md) record. The public key it signs with must be a valid `verificationMethod` at the time specified in the `createdAt` field, of type `EcdsaSecp256k1VerificationKey2019`.
+The timestamper must maintain a [did:ethr](https://github.com/decentralized-identity/ethr-did-resolver/blob/master/doc/did-method-spec.md) record. When it signs an update it must do so with a public key of type `EcdsaSecp256k1VerificationKey2019`, listed in as a `verificationMethod` at the time specified in the `createdAt` field of the update.
 
 ### Changing timestampers
 
