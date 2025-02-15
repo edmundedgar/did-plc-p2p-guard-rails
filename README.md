@@ -20,6 +20,8 @@ Conceptually the DID:PLC server performs two distinct functions:
 
 Users sign their own DID update operations, but the validity or invalidity of an operation can depend on what time it was sent in relation to other operations on the same DID. The DID:PLC server registers the time at which it received the operation and uses this to validate or invalidate each operation. Any other user who possessed the same updates that the DID:PLC server did, and also knew at what time they were received, could unambiguously reach the same conclusion about the current state of the DID.
 
+This document will refer to the server performing this roll as a "timestamper".
+
 ### Serving queries
 
 Clients need to get their data about signed queries from somewhere. The DID:PLC server keeps a record of all updates, and serves the client either the current state of a DID or the record of updates to it (the audit log).
