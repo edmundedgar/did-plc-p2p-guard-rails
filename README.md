@@ -120,7 +120,7 @@ In the scenario below, someone sends `Update1` to the blockchain for a P2P times
 
 If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
 
-Note that since anyone can send a signed merkle root to the blockchain, there is no need for a user who wants immediate reorg protection to wait for someone else to do it: Once the timestamper has included their update in a signed merkle root, the user can do the blockchain timestamping themselves.
+Note that since anyone can send a signed merkle root to the blockchain, there is no need for a user who wants immediate reorg protection to wait for someone else to do it: Once the timestamper has included their update in a signed merkle root, the user can do the blockchain timestamping themselves if they so choose. Their action will protect all other users who made updates since the last blockchain update at no extra cost.
 
 ## Rationale and variations
 
