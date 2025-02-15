@@ -24,7 +24,7 @@ This document will refer to the server performing this role as a "timestamper".
 
 ### Serving queries
 
-Clients need to get their data about signed queries from somewhere. The DID:PLC server keeps a record of all updates, and serves the client either the current state of a DID or the record of updates to it (the audit log).
+DID:PLC server keeps a record of all updates, and serves the end user (or a mirror) either the current state of a DID or the record of updates to it (the audit log).
 
 ## Problems with the current DID:PLC model
 
