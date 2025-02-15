@@ -126,7 +126,7 @@ Note that since anyone can send a signed merkle root to the blockchain, there is
 
 ### Why only guardrails?
 
-We could put the whole system on a blockchain, but all available options have drawbacks.
+We could put the whole system on a blockchain and avoid having a window where there could still be a reorg, but all available options have drawbacks.
 
 Public blockchains, if sufficiently decentralized to make their usage meaningful, tend to have slow time to update, and can be unpredictably expensive due to scaling limitations. This proposal aims to maintain the current user experience of a user whose timestamper is well-behaved, which is difficult to guarantee with the mature public blockchains currently available.
 
