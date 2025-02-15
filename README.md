@@ -144,7 +144,7 @@ Whether a message should be nullified can be verified independently by the clien
 
 ### Why not require the timestamper to publish blockchain updates?
 
-We could require that updates be P2P timestamped. However this stops the system processing updates if the blockchain is unavailable for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
+We could require that updates be P2P timestamped. However this stops timestampers processing updates they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
 
 ### Why use DID:ETHR for timestamper rotation keys?
 
