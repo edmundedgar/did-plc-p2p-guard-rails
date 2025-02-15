@@ -2,7 +2,7 @@
 
 ## tl;dr
 
-The directory signs the updates it receives. Anyone can run a directory. You can switch directory with a DID update. Optionally a directory can sign merkle trees of messages it signed.
+The directory signs the updates it receives. Anyone can run a directory. You can switch directory with a DID update. A directory can sign merkle trees of messages it signed.
 
 We use a blockchain for the following limited purposes: Forcing through updates the directory won't sign, rotating the keys the directory signs with, and timestamping signed merkle roots for reorg-proofing. The reorg-proofing timestamps have no fixed schedule and anyone can create them at any time.
 
