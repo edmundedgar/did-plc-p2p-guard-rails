@@ -100,7 +100,7 @@ Given honest, correctly-functioning timestampers, anyone in receipt of all the s
 
 However, as we discussed earlier, a malicious or broken timestamper may sign messages that purport to have been received earlier than they really were. This can result in conflicting versions of the DID. Clients need to be able to choose between these conflicting versions.
 
-We tackle reorgs by adding the rule that that if a timestamper timestamps a version of the DID that conflicts with a version that has already been included in a signed merkle root timestamped on the blockchain, a client must honour the earlier blockchain-timestamped version.
+We tackle reorgs by adding the rule that that if a timestamper timestamps a version of the DID that conflicts with a version that has already been included in a signed merkle root timestamped on the blockchain, a client must honour the blockchain-timestamped version. (If multiple blockchain-timestamped versions conflict, they should honour the one with the earlier blockchain timestamp.)
 
 Note that since both the creation and signing of the merkle root and its publication on the blockchain are optional, and the sharing of the data that would allow the construction of proofs against the merkle root is not enforced, a user can only be confident that their update is secure against a fraudulent reorg by the timestamper if the following conditions apply:
 
