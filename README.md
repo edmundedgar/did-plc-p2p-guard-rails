@@ -60,7 +60,7 @@ The server may simply start performing badly, in which case it would be better i
 
 ### Serving queries
 
-We assume users will mostly continue to use a semi-trusted server for serving queries, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any user trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
+We assume users will mostly continue to send their queries about DID state to a semi-trusted server, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any user trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
 
 ### Signing messages
 
@@ -153,3 +153,7 @@ The design makes blockchain timestamps entirely voluntary. Timestampers do not n
 Other parts of Atproto support two address standards, DID:Web and DID:PLC. DID:Web is unsuitable because we need to maintain a history of updates which cannot be tampered with even by the timestamper themselves. Using DID:PLC would add a degree of recursiveness to the system which makes it confusing to analyse.
 
 Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying. We propose DID:ETHR because it already exists as a well-specified standard (albeit not a widely-adopted one). Using a simpler bespoke standard instead would also be viable. Another option would be to use DID:PLC, but with the additional restriction that the `timestamperDid` of a timestamper must be null so all updates to it would have to follow the "forced update" path.
+
+### Would it make more sense to limited forced updates to timestamper selection?
+
+Our design provides two paths for all DID updates, the standard timestamper path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your timestamper. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative timestamper. Timestamper updates could be more compact, reducing gas usage. The downside is that if timestamper changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that timestamper changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative timestamper.
