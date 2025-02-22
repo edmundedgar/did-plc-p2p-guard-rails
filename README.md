@@ -36,7 +36,7 @@ The server can maliciously refuse to accept updates.
 
 It can also refuse to tell users and mirrors which updates it has accepted, in which case it will not be possible to run an honest mirror, so users cannot get information from any other source even if there is one they trust that was online when the updates were made.
 
-This differs from the situation elsewhere in atproto, where although users may rely on a semi-trusted server such as a relay or appview to provide them with data, they can always get the data from somewhere else if the server misbehaves and verify its accuracy.
+This differs from the situation elsewhere in atproto, where although users may rely on a semi-trusted server such as a relay or appview to provide them with data, they can always get the data from somewhere else and verify its accuracy if the server misbehaves.
 
 ### Malicious reorgs
 
@@ -52,7 +52,7 @@ The server can lie about the relative times at which it received messages.
 
 Exploiting the ability to lie about timestamps requires possession of a key that would normally only be held by the user or someone to whom they delegate. However, we can imagine two plausible cases where the attacker possesses such a key. In the first, the user rotates from an old rotation key to a new one, and does not secure the old key. In the second, the user initially creates an account with a third-party, for example bsky.social, but subsequently migrates their account elsewhere to avoid needing to trust the third-party. In both cases the user reasonably expects that their old key can no longer be used to manipulate their account, but this assumption is not guaranteed by the current design of the DID:PLC system.
 
-### Reliability / Availability
+### Poor unavailability
 
 The server may simply start performing badly, in which case it would be better if clients could switch to an alternative.
 
@@ -60,7 +60,7 @@ The server may simply start performing badly, in which case it would be better i
 
 ### Serving queries
 
-We assume users will mostly continue to send their queries about DID state to a semi-trusted server, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any user trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
+We assume users will mostly continue to send their queries about DID state to a semi-trusted server, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any party trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
 
 ### Signing messages
 
@@ -96,11 +96,9 @@ Anyone may send a blockchain transaction to make a p2p timestamp of any signed m
 
 ### Reorg protection
 
-Given honest, correctly-functioning timestampers, anyone in receipt of all the signed messages for a DID can tell unambiguously what the state of the DID should be. This includes cases where an update was reverted by signing with a higher-priority rotation key, as the reversion rules can be applied unambiguously as long as the messages have been correctly timestamped.
+As we discussed earlier, a malicious or broken timestamper may sign messages that purport to have been received earlier than they really were. This can result in conflicting versions of the DID. Clients need to be able to choose between these conflicting versions.
 
-However, as we discussed earlier, a malicious or broken timestamper may sign messages that purport to have been received earlier than they really were. This can result in conflicting versions of the DID. Clients need to be able to choose between these conflicting versions.
-
-We tackle reorgs by adding the rule that that if a timestamper timestamps a version of the DID that conflicts with a version that has already been included in a signed merkle root timestamped on the blockchain, a client must honour the blockchain-timestamped version. (If multiple blockchain-timestamped versions conflict, they should honour the one with the earlier blockchain timestamp.)
+We add the rule that that if a timestamper timestamps a version of the DID that conflicts with a version that has already been included in a signed merkle root timestamped on the blockchain, a client must honour the blockchain-timestamped version. (If multiple blockchain-timestamped versions conflict, they should honour the one with the earlier blockchain timestamp.)
 
 Note that since both the creation and signing of the merkle root and its publication on the blockchain are optional, and the sharing of the data that would allow the construction of proofs against the merkle root is not enforced, a user can only be confident that their update is secure against a fraudulent reorg by the timestamper if the following conditions apply:
 
@@ -118,9 +116,23 @@ In the scenario below, someone sends `Update1` to the blockchain for a P2P times
                    -----------------------------------------------> Update1b[Attacker key]-->
                                                                    (falsely timestamped t1)
 
-If the timestamper stops signing merkle roots, or publishes signed merkle roots without revealing the tree it represents, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root, or the last update before the timestamper stopped revealing the content of their merkle trees. From that point on they are at risk of fraudulent reorgs. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
+If the timestamper stops signing merkle roots, a user can only be confident that they are protected against a malicious reorg up to the earlier of the last update that was included in a signed merkle root. From that point on they are at risk of a fraudulent reorg. If a user sees their timestamper exhibiting this type of dysfunction, they would be wise to switch to a different timestamper the next time they make an update. If the dysfunction began after the user sent their last update but before it was sent to the blockchain, they should switch to a new timestamper immediately to lock in their most recent update.
 
 Note that since anyone can send a signed merkle root to the blockchain, there is no need for a user who wants immediate reorg protection to wait for someone else to do it: Once the timestamper has included their update in a signed merkle root, the user can do the blockchain timestamping themselves if they so choose. Their action will protect all other users who made updates since the last blockchain update at no extra cost.
+
+## Problems we don't solve
+
+The following problems are mitigated by this design, but not completely solved:
+
+### Immediate reorg protection
+
+During the window between sending an update and somebody making a blockchain timestamp, a malicious timestamper can still maliciously reorg a DID using a key that was valid after the last timestamped update.
+
+### Delayed reveal of account compromises
+
+A malicious user in control of your rotation key can take control of your account. This is true regardless of how updates are timestamped. However, a consequence of the fact that we are only applying p2p timestamping to merkle tree roots without sending the updates they contain to the blockchain is that a malicious user in concert with a malicious timestamper can conceal the fact that they have taken control of your account until later. A user can know that there is something wrong with the timestamper, because they can see that it has published signed merkle roots without publishing the tree it represents, but they have no way of finding out whether their account has been compromised, and no way to protect their account in the event that it has.
+
+### Why only guardrails?
 
 ## Rationale and variations
 
