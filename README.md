@@ -6,8 +6,8 @@ The directory signs the updates it receives. Anyone can run a directory. You can
 
 We use transactions on a public blockchain for the following purposes: 
 
-1. Forcing through updates the directory won't sign.
-2. P2P-timestamping signed merkle roots for reorg-proofing.
+1. Forcing through updates that directory refuses to accept.
+2. P2P-timestamping signed merkle roots for reorg-proofing. This can be done by anyone whenever they like, or never.
 3. Rotating the keys the directory signs with.
 
 ## Motivation
@@ -136,17 +136,7 @@ During the window between sending an update and somebody making a blockchain tim
 
 A malicious user in control of your rotation key can take control of your account. This is true regardless of how updates are timestamped. However, a consequence of the fact that we are only applying p2p timestamping to merkle tree roots without sending the updates they contain to the blockchain is that a malicious user in concert with a malicious timestamper can conceal the fact that they have taken control of your account until later. A user can know that there is something wrong with the timestamper, because they can see that it has published signed merkle roots without publishing the tree it represents, but they have no way of finding out whether their account has been compromised, and no way to protect their account in the event that it has.
 
-### Why only guardrails?
-
 ## Rationale and variations
-
-### Why only guardrails?
-
-We could put the whole system on a blockchain and avoid having a window where there could still be a reorg, but all available options have drawbacks.
-
-Public blockchains, if sufficiently decentralized to make their usage meaningful, tend to have slow time to update, and can be unpredictably expensive due to scaling limitations. This proposal aims to maintain the current user experience of a user whose timestamper is well-behaved, which is difficult to guarantee with the mature public blockchains currently available.
-
-Consortium blockchains consisting of trusted parties operating without crypto-economic incentives may be able to scale sufficiently and provide updates only somewhat slower than the current centralized directory. However such arrangements have rarely been successful in practice. One problem is that the consortium needs to consist of members with exactly the right amount of adversariality: If they are too well aligned with the people who ask them to participate they fail to provide an adequate check on the kind of behaviour they are supposed to prevent, and just run whatever update they are asked to by the person who would otherwise have been running the centralized server. This arrangement may even be worse than having a single trusted party, because responsibility is diluted and no single party can be blamed. If they are too adversarial, the consortium may fragment.
 
 ### Why sign messages individually instead of using the signature of the merkle roots?
 
@@ -173,3 +163,11 @@ Timestamper key rotations are expected be unusual so the drawbacks of a public b
 ### Would it make more sense to limited forced updates to timestamper selection?
 
 Our design provides two paths for all DID updates, the standard timestamper path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your timestamper. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative timestamper. Timestamper updates could be more compact, reducing gas usage. The downside is that if timestamper changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that timestamper changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative timestamper.
+
+### Why only guardrails?
+
+We could put the whole system on a blockchain and avoid having a window where there could still be a reorg, but all available options have drawbacks.
+
+Public blockchains, if sufficiently decentralized to make their usage meaningful, tend to have slow time to update, and can be unpredictably expensive due to scaling limitations. This proposal aims to maintain the current user experience of a user whose timestamper is well-behaved, which is difficult to guarantee with the mature public blockchains currently available.
+
+Consortium blockchains consisting of trusted parties operating without crypto-economic incentives may be able to scale sufficiently and provide updates only somewhat slower than the current centralized directory. However such arrangements have rarely been successful in practice. One problem is that the consortium needs to consist of members with exactly the right amount of adversariality: If they are too well aligned with the people who ask them to participate they fail to provide an adequate check on the kind of behaviour they are supposed to prevent, and just run whatever update they are asked to by the person who would otherwise have been running the centralized server. This arrangement may even be worse than having a single trusted party, because responsibility is diluted and no single party can be blamed. If they are too adversarial, the consortium may fragment.
