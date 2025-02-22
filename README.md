@@ -4,7 +4,7 @@
 
 The directory signs the updates it receives. Anyone can run a directory. You can switch directory with a DID update. A directory can sign merkle trees of messages it signed.
 
-We use transactions on a public blockchain for the following purposes: 
+We use transactions on a public blockchain for: 
 
 1. Forcing through updates that directory refuses to accept.
 2. P2P-timestamping signed merkle roots for reorg-proofing. This can be done by anyone whenever they like, or never.
