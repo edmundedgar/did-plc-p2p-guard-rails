@@ -110,6 +110,7 @@ Note that since both the creation and signing of the merkle root and its publica
 2. They have the necessary intermediate tree node data to connect their update to that signed merkle root
 
 In the scenario below, someone sends `Update1` to the blockchain for a P2P timestamp at time `t+3`. Clients will reject `Update1b` sent by the malicious timestamper at time `t+4` because they will see that it is in conflict with the version timestamped at time `t+3`. 
+
        time t         time t+1        time t+2          time t+3          time t+4
 
     Genesis[Key 1] --------------> Update1[Key 2] ------------------------------------------>
