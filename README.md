@@ -7,7 +7,7 @@ The directory signs the updates it receives. Anyone can run a directory. You can
 We use transactions on a public blockchain for: 
 
 1. Forcing through updates that directory refuses to accept.
-2. P2P-timestamping signed merkle roots for reorg-proofing. Anyone can do this whenever they like, and noone has to.
+2. P2P-timestamping signed merkle roots for reorg-proofing. Anyone can do this whenever they like, and nobody has to.
 3. Rotating the keys the directory signs with.
 
 ## Motivation
