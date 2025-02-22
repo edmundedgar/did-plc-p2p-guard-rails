@@ -160,7 +160,7 @@ Other parts of Atproto support two address standards, DID:Web and DID:PLC. DID:W
 
 Timestamper key rotations are expected be unusual so the drawbacks of a public blockchain (cost per transaction, slow confirmation speed) should not be disqualifying. We propose DID:ETHR because it already exists as a well-specified standard (albeit not a widely-adopted one). Using a simpler bespoke standard instead would also be viable. Another option would be to use DID:PLC, but with the additional restriction that the `timestamperDid` of a timestamper must be null so all updates to it would have to follow the "forced update" path.
 
-### Would it make more sense to limited forced updates to timestamper selection?
+### Would it make more sense to limit forced updates to timestamper selection?
 
 Our design provides two paths for all DID updates, the standard timestamper path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your timestamper. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative timestamper. Timestamper updates could be more compact, reducing gas usage. The downside is that if timestamper changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that timestamper changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative timestamper.
 
