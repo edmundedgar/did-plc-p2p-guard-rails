@@ -143,7 +143,7 @@ A malicious user in control of your rotation key can take control of your accoun
 
 ### Why sign messages individually instead of using the signature of the merkle roots?
 
-Since the design calls for timestampers to put their messages in a signed tree, we could skip the individual signatures and instead rely on proofs against the signed merkle root. We propose individual signatures here only because it seems like a less disruptive change to the current functioning of the system (just add a "sig" field to the audit log instead of an entire proof) and secondly because the need to maintain the merkle tree in real time for all the accounts the timestamper has updated may have performance implications and complicate some strategies for scaling. These considerations aside, the design would work equally well without the individual signatures.
+Since the design calls for timestampers to put their messages in a signed tree, we could skip the individual signatures and instead rely on proofs against the signed merkle root. We propose individual signatures here out of practical concerns: Firstly because using individual signatures seems like a less disruptive change to the current functioning of the system (just add a "sig" field to the audit log instead of an entire proof) and secondly because the need to maintain the merkle tree in real time for all the accounts the timestamper has updated may have performance implications and complicate some strategies for scaling. These considerations aside, the design would work equally well without the individual signatures.
 
 ### Why not require the timestamper to publish signed merkle trees?
 
