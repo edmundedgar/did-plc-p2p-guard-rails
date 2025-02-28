@@ -86,7 +86,7 @@ Entries with no `timestamperDid` specified are assumed to be using the DID repre
 
 If the timestamper is functioning correctly, a user can update their DID record with the timestamper as they do now. However, the user also has the option to send their update to the blockchain. In normal conditions this is slower and more expensive than sending it to their timestamper, so normally it would only be done if the timestamper is unavailable or refuses to accept their update.
 
-Clients should read messages from the blockchain and include them as if they have been signed by the timestamper.
+Clients should read messages from the blockchain and include them as if they have been signed by the timestamper. This requires clients to have access to blockchain data, either by running their own node, by accessing a node run by someone else, or by receiving requests from a dedicated server they trust that sends them the relevant updates.
 
 ### Creating signed merkle trees
 
