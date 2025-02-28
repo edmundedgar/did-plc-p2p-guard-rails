@@ -40,7 +40,7 @@ The server can maliciously refuse to accept updates.
 
 It can also refuse to tell users and mirrors which updates it has accepted, in which case it will not be possible to run an honest mirror, so users cannot get information from any other source even if there is one they trust that was online when the updates were made.
 
-This differs from the situation elsewhere in atproto, where although users may rely on a semi-trusted server such as a relay or appview to provide them with data, they can always get the data from somewhere else and verify its accuracy if the server misbehaves.
+This differs from the design elsewhere in atproto, which uses self-certifying data to ensure that although users may get their data from a semi-trusted server such as a relay or appview, they can always get the data from somewhere else and verify its accuracy if the server misbehaves.
 
 ### Malicious reorgs
 
