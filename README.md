@@ -140,7 +140,7 @@ During the window between sending an update and somebody making a blockchain tim
 
 ### Delayed reveal of account compromises
 
-A malicious user in control of your rotation key can take control of your account. This is true regardless of how updates are timestamped. However, a consequence of the fact that we are only applying p2p timestamping to merkle tree roots without sending the updates they contain to the blockchain is that a malicious user in concert with a malicious timestamper can conceal the fact that they have taken control of your account until later. A user can know that there is something wrong with the timestamper, because they can see that it has published signed merkle roots without publishing the tree it represents, but they have no way of finding out whether their account has been compromised, and no way to protect their account in the event that it has.
+An attacker in control of your rotation key can take control of your account. This is true regardless of how updates are timestamped. However, a consequence of the fact that we are only applying p2p timestamping to merkle tree roots without sending the updates they contain to the blockchain is that an attacker in concert with a malicious timestamper can conceal the fact that they have taken control of your account until later. A user can know that there is something wrong with the timestamper, because they can see that it has published signed merkle roots without publishing the tree it represents, but they have no way of finding out whether their account has been compromised, and no way to protect their account in the event that it has.
 
 ## Rationale and variations
 
