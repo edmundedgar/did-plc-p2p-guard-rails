@@ -141,6 +141,10 @@ A malicious user in control of your rotation key can take control of your accoun
 
 ## Rationale and variations
 
+### Why not require the timestamper to publish blockchain updates?
+
+The design makes blockchain timestamps entirely voluntary. Timestampers do not need to write to the blockchain at all, except when they update their signing key. We could instead require that updates be P2P timestamped as a condition for validity. However this would prevent timestampers from processing updates if they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
+
 ### Why sign messages individually instead of using the signature of the merkle roots?
 
 Since the design calls for timestampers to put their messages in a signed tree, we could skip the individual signatures and instead rely on proofs against the signed merkle root. We propose individual signatures here out of practical concerns: Firstly because using individual signatures seems like a less disruptive change to the current functioning of the system (just add a "sig" field to the audit log instead of an entire proof) and secondly because the need to maintain the merkle tree in real time for all the accounts the timestamper has updated may have performance implications and complicate some strategies for scaling. These considerations aside, the design would work equally well without the individual signatures.
@@ -152,10 +156,6 @@ Assuming trees are not published synchronously with message signing (see previou
 ### Why sign `createdAt` and `CID` but not `nullified`?
 
 Whether a message should be nullified can be verified independently by the client, and may be updated on receipt of new information about the DID history.
-
-### Why not require the timestamper to publish blockchain updates?
-
-The design makes blockchain timestamps entirely voluntary. Timestampers do not need to write to the blockchain at all, except when they update their signing key. We could instead require that updates be P2P timestamped as a condition for validity. However this would prevent timestampers from processing updates if they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
 
 ### Why use DID:ETHR for timestamper rotation keys?
 
