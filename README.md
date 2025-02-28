@@ -166,3 +166,7 @@ Timestamper key rotations are expected be unusual so the drawbacks of a public b
 ### Would it make more sense to limit forced updates to timestamper selection?
 
 Our design provides two paths for all DID updates, the standard timestamper path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your timestamper. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative timestamper. Timestamper updates could be more compact, reducing gas usage. The downside is that if timestamper changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that timestamper changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative timestamper.
+
+### Why only guardrails?
+
+We could solve the problems listed in "problems we don't solve" by removing the timestamping servers entirely and just putting all the updates on a public blockchain. However this will tend to be slower and more expensive than using a semi-trusted timestamping server, and this proposal aims to avoid damaging the experience of users to the extent that a server they trust is running honestly and working well.
