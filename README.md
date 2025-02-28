@@ -9,7 +9,7 @@
 
 Use transactions on a public blockchain for: 
 
- * Forcing through updates that directory refuses to accept.
+ * Forcing through updates that the directory refuses to accept.
  * P2P-timestamping signed merkle roots for reorg-proofing. Anyone can do this whenever they like, and nobody has to.
  * Rotating the keys the directory signs with.
 
