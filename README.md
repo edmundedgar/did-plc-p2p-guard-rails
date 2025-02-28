@@ -16,7 +16,7 @@ The centralized DID:PLC server model is working efficiently and economically. Ho
 
 This proposal attempts to mitigate or eliminate the problems that occur if it becomes malicious or broken, without compromising the functionality and low cost that users currently enjoy while it is running correctly.
 
-## The DID:PLC model
+## The current DID:PLC model
 
 Conceptually the DID:PLC server performs two distinct functions:
 
@@ -166,11 +166,3 @@ Timestamper key rotations are expected be unusual so the drawbacks of a public b
 ### Would it make more sense to limit forced updates to timestamper selection?
 
 Our design provides two paths for all DID updates, the standard timestamper path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your timestamper. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative timestamper. Timestamper updates could be more compact, reducing gas usage. The downside is that if timestamper changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that timestamper changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative timestamper.
-
-### Why only guardrails?
-
-We could put the whole system on a blockchain and avoid having a window where there could still be a reorg, but all available options have drawbacks.
-
-Public blockchains, if sufficiently decentralized to make their usage meaningful, tend to have slow time to update, and can be unpredictably expensive due to scaling limitations. This proposal aims to maintain the current user experience of a user whose timestamper is well-behaved, which is difficult to guarantee with the mature public blockchains currently available.
-
-Consortium blockchains consisting of trusted parties operating without crypto-economic incentives may be able to scale sufficiently and provide updates only somewhat slower than the current centralized directory. However such arrangements have rarely been successful in practice. One problem is that the consortium needs to consist of members with exactly the right amount of adversariality: If they are too well aligned with the people who ask them to participate they fail to provide an adequate check on the kind of behaviour they are supposed to prevent, and just run whatever update they are asked to by the person who would otherwise have been running the centralized server. This arrangement may even be worse than having a single trusted party, because responsibility is diluted and no single party can be blamed. If they are too adversarial, the consortium may fragment.
