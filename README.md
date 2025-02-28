@@ -7,7 +7,7 @@
  * You can switch directory with a DID update.
  * A directory can sign merkle trees of messages it signed.
 
-We use transactions on a public blockchain for: 
+Use transactions on a public blockchain for: 
 
  * Forcing through updates that directory refuses to accept.
  * P2P-timestamping signed merkle roots for reorg-proofing. Anyone can do this whenever they like, and nobody has to.
