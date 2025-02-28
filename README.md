@@ -59,7 +59,7 @@ The server can lie about the relative times at which it received messages.
 
 Exploiting the ability to lie about timestamps requires possession of a key that would normally only be held by the user or someone to whom they delegate. However, we can imagine two plausible cases where the attacker possesses such a key. In the first, the user rotates from an old rotation key to a new one, and does not secure the old key. In the second, the user initially creates an account with a third-party, for example bsky.social, but subsequently migrates their account elsewhere to avoid needing to trust the third-party. In both cases the user reasonably expects that their old key can no longer be used to manipulate their account, but this assumption is not guaranteed by the current design of the DID:PLC system.
 
-### Poor unavailability
+### Poor availability etc
 
 The server may simply start performing badly, in which case it would be better if clients could switch to an alternative.
 
