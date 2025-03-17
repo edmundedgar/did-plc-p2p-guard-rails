@@ -67,7 +67,7 @@ The server may simply start performing badly, in which case it would be better i
 
 ### Serving queries
 
-We assume users will mostly continue to send their queries about DID state to a semi-trusted server, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any party trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that.
+We assume users will mostly continue to send their queries about DID state to a semi-trusted server, which may or may not be the same server that timestamps their updates. These servers will continue to serve updates for all users (but could be sharded). The rest of this document will refer to any party trying to get DID:PLC entries as a "client", but in practice it is likely that the "client" is a semi-trusted server, and the end user queries that. If you like querying plc.directory you can keep querying plc.directory.
 
 ### Signing messages
 
