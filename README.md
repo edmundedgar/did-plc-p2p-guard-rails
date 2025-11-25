@@ -148,7 +148,7 @@ An attacker in control of your rotation key can take control of your account. Th
 
 The design makes blockchain timestamps entirely voluntary. Sequencers do not need to write to the blockchain at all, except when they update their signing key. We could instead require that updates be P2P timestamped as a condition for validity. However this would prevent sequencers from processing updates if they are unable to write to the blockchain for any reason, including a congestion spike resulting in high costs. By making blockchain updates voluntary and letting anybody do them, we allow people to publish only what is needed balancing the cost of making the updates at a particular time and the scale of the risk they are trying to address.
 
-### Why sign messages individually instead of using the signature of the merkle roots?
+### Why have sequencers sign messages individually instead of using the signature of the merkle roots?
 
 Since the design calls for sequencers to put their messages in a signed tree, we could skip the individual signatures and instead rely on proofs against the signed merkle root. We propose individual signatures here out of practical concerns: Firstly because using individual signatures seems like a less disruptive change to the current functioning of the system (just add a "sig" field to the audit log instead of an entire proof) and secondly because the need to maintain the merkle tree in real time for all the accounts the sequencer has updated may have performance implications and complicate some strategies for scaling. These considerations aside, the design would work equally well without the individual signatures.
 
