@@ -172,4 +172,4 @@ Our design provides two paths for all DID updates, the standard sequencer path a
 
 ### Why only guardrails?
 
-We could solve the problems listed in "problems we don't solve" by removing the sequencers entirely and just putting all the updates on a public blockchain. However this will tend to be slower and more expensive than using a semi-trusted timestamping server, and this proposal aims to avoid damaging the experience of users to the extent that a server they trust is running honestly and working well.
+We could solve the problems listed in "problems we don't solve" by removing the sequencers entirely and just putting all the updates on a public blockchain. However this will tend to be slower and more expensive than using a semi-trusted sequencer. This proposal aims to avoid damaging the experience of users to the extent that a server they trust is running honestly and working well.
