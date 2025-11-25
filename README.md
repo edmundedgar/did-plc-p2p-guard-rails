@@ -168,7 +168,7 @@ Sequencer key rotations are expected be unusual so the drawbacks of a public blo
 
 ### Would it make more sense to limit forced updates to sequencer selection?
 
-Our design provides two paths for all DID updates, the standard sequencer path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your sequencer. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative sequencer. Sequencer updates could be more compact, reducing gas usage. The downside is that if sequencer changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that sequencer changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative sequencer.
+Our design provides two paths for all DID updates, the standard sequencer path and the blockchain "forced update" path. An alternative would be to separate these and use the blockchain only to change your sequencer. This would have equivalent censorship-proofing properties, because you could always route around an uncooperative sequencer. Sequencer updates could be more compact, reducing gas usage for forced updates. The downside is that if sequencer changes are still allowed via the non-blockchain route, clients now have to manage two different types of message which is more complex. Alternatively, if we stipulate that sequencer changes can only be done on the blockchain, users will have to spend gas doing something that could otherwise have been done for free by a cooperative sequencer.
 
 ### Why only guardrails?
 
